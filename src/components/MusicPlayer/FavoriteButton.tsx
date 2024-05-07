@@ -15,7 +15,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({song, onToggleFav
 
     
   return (
-    <button className='focus:outline-none' onClick={(e) => { e.stopPropagation(); onToggleFavorite(id); }}>
+    <button className='focus:outline-none w-1/3' onClick={(e) => { e.stopPropagation(); onToggleFavorite(id); }}>
     {isFavorite ? <IoMdHeart style={{color: 'white', outline: 'none', cursor: 'pointer'}}/> : <IoIosHeartEmpty />}
 </button>
 

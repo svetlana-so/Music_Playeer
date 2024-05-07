@@ -1,5 +1,6 @@
 import React from 'react';
 import useMusicStore from '../../state/musicStore';
+import { LiaVolumeUpSolid } from "react-icons/lia";
 
 interface VolumeControlProps {
     audioRef: React.RefObject<HTMLAudioElement>; 
@@ -17,9 +18,10 @@ const VolumeControl: React.FC<VolumeControlProps> = ({ audioRef }) => {
     };
 
     return (
-        <div className="flex justify-center">
-            <label htmlFor="volume">🔈</label>
+        <div className="flex justify-center items-center">
+            <label htmlFor="volume"><LiaVolumeUpSolid size={30} /></label>
             <input
+            className="slider w-32 h-1 rounded-lg bg-gray-500 white-glow appearance-none focus:outline-none focus:ring-2 focus:ring-gray-600"
                 type="range"
                 id="volume"
                 min="0"
@@ -29,6 +31,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({ audioRef }) => {
                 onChange={handleVolumeChange}
             />
         </div>
+        
     );
 };
 

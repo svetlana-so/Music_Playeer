@@ -6,7 +6,7 @@ import { Search } from './Search'
 
 export const NavBar = () => {
   return (
-    <div className='flex flex-row gap-2'>
+    <div className='w-full flex flex-row justify-center gap-10 mb-4'>
     <Home/>
     <Search/>
     <Library/>

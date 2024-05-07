@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu Sans Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 800;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -17,3 +19,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+.white-glow {
+  box-shadow: 0px 0px 40px 2px rgb(147, 144, 144);
+}

@@ -12,17 +12,13 @@ const MusicPlayer: React.FC = () => {
 
     useEffect(() => {
         if (currentSong && audioRef.current) {
-            console.log('Setting audio source:', currentSong.src);
             audioRef.current.src = currentSong.src;
-            audioRef.current.play().catch((error) => {
-                console.error('Failed to play audio:', error);
-            });
+            audioRef.current.load()
         }
     }, [currentSong]);
 
     useEffect(() => {
         if (audioRef.current) {
-            console.log('Playing state:', isPlaying);
             if (isPlaying) {
                 audioRef.current.play().catch((error) => {
                     console.error('Failed to play audio:', error);
@@ -41,17 +37,17 @@ const MusicPlayer: React.FC = () => {
     }, [volume]);
 
     return (
-        <div className="music-player">
-            <h1 className='text-center my-8'>My Music Player</h1>
+        <div className="music-player flex flex-col gap-8 w-full justify-center items-center">
+            <h1 className='text-center text-xl text-gray-500 mt-4'>My Music Player</h1>
             
             {currentSong && (
                 <div className="flex flex-col justify-center items-center my-4">
                     <div>
-                    <img className='w-40' src={currentSong.artCover} alt={currentSong.title} />
+                    <img className='w-40 rounded-lg white-glow' src={currentSong.artCover} alt={currentSong.title} />
                     </div>
-                    <div>
-                        <h2>{currentSong.title}</h2>
-                        <p>{currentSong.artist}</p>
+                    <div className='flex flex-col justify-center items-center'>
+                        <h2 className='text-2xl font-semibold text-gray-400'>{currentSong.title}</h2>
+                        <p className='text-gray-600'>{currentSong.artist}</p>
                     </div>
                 </div>
             )}
@@ -59,7 +55,7 @@ const MusicPlayer: React.FC = () => {
             <Controls />
             <VolumeControl audioRef={audioRef} />
             <SongList />
-            <NavBar/>
+            <NavBar />
         </div>
     );
 };

@@ -7,7 +7,7 @@ const SongList: React.FC = () => {
     const { playlist, currentSong, setCurrentSong, toggleFavorite } = useMusicStore();
 
     return (
-        <div className="song-list">
+        <div className="w-2/3 h-60 overflow-y-auto px-2">
             {playlist.map((song) => (
                 <SongInformationForTheList
                     key={song.id}

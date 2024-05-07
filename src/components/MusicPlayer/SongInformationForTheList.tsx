@@ -18,11 +18,12 @@ const SongInformationForTheList: React.FC<SongInformationForTheListProps> = ({
     return (
   
         <div className={` cursor-pointer ${isPlaying ? 'playing' : ''} flex flex-row items-center justify-between`}>
-            <div className="flex flex-row gap-4 content-center m-4" onClick={onPlay}>
-                <img className='w-20' src={song.artCover} alt={song.title} />
-                <div className=' flex flex-col text-center justify-center'>
-                    <h3>{song.title}</h3>
-                    <p>{song.artist}</p>
+            <div className="flex flex-row gap-2 content-center m-4" onClick={onPlay}>
+                <img className='w-16 rounded-lg' src={song.artCover} alt={song.title} />
+                <div className=' flex flex-col justify-center'>
+                <h2 className='text-md font-semibold text-gray-400'>{song.title}</h2>
+                <p className='text-gray-600 text-sm'>{song.artist}</p>
+                    
                 </div>
             </div>
           <div>

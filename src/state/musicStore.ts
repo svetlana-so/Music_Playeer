@@ -89,6 +89,7 @@ const useMusicStore = create<MusicState>()(
             name: 'music-store',
             partialize: (state) => ({
                 favoriteSongs: state.favoriteSongs,
+                currentSong: state.currentSong,
             }),
         }
     )
@@ -101,6 +102,18 @@ const initializeMusicStore = async () => {
         const isFavorite = favoriteSongs.some(favorite => favorite.id === song.id);
         return { ...song, isFavorite };
     });
+    useMusicStore.setState({ playlist: updatedSongs });
+
+    const persistedCurrentSong = useMusicStore.getState().currentSong;
+    if (persistedCurrentSong) {
+        const currentSongInPlaylist = updatedSongs.find(
+            (song) => song.id === persistedCurrentSong.id
+        );
+        if (currentSongInPlaylist) {
+            useMusicStore.setState({ currentSong: currentSongInPlaylist });
+        }
+    }
+
     useMusicStore.setState({ playlist: updatedSongs });
 };
 
