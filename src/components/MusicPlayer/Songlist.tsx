@@ -2,6 +2,7 @@ import React from 'react';
 import useMusicStore from '../../state/musicStore';
 import SongInformationForTheList from './SongInformationForTheList';
 
+
 const SongList: React.FC = () => {
     const { playlist, currentSong, setCurrentSong, toggleFavorite } = useMusicStore();
 

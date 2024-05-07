@@ -1,4 +1,6 @@
-import {create} from 'zustand';
+import { create, SetState, GetState } from 'zustand';
+import {produce} from 'immer'
+import { persist } from 'zustand/middleware';
 import { loadSongs } from '../utils/loadSongs';
 
 export interface Song {
@@ -21,13 +23,15 @@ interface MusicState {
     toggleFavorite: (songId: string) => void;
     setCurrentSong: (song: Song) => void;
     isPlaying: boolean;
+    favoriteSongs: Song[];
 }
 
-const useMusicStore = create<MusicState>((set, get) => ({
+const createMusicStore = (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
     currentSong: null,
-    playlist: [],  
+    playlist: [],
     volume: 1,
     isPlaying: false,
+    favoriteSongs: [],
     playPause: () => {
         const { isPlaying, currentSong } = get();
         if (currentSong) {
@@ -51,21 +55,53 @@ const useMusicStore = create<MusicState>((set, get) => ({
     adjustVolume: (level) => {
         set({ volume: level });
     },
-    toggleFavorite: (songId) => {
-        const { playlist } = get();
-        const updatedPlaylist = playlist.map(song => 
-            song.id === songId ? { ...song, isFavorite: !song.isFavorite } : song
+    toggleFavorite: (songId: string) => {
+        set(
+            produce((draft: MusicState) => {
+                const song = draft.playlist.find((song) => song.id === songId);
+                if (song) {
+                    song.isFavorite = !song.isFavorite;
+                    if (!Array.isArray(draft.favoriteSongs)) {
+                        draft.favoriteSongs = [];
+                    }
+                    if (song.isFavorite) {
+                        if (!draft.favoriteSongs.some((favorite) => favorite.id === song.id)) {
+                            draft.favoriteSongs.push(song);
+                        }
+                    } else {
+                        draft.favoriteSongs = draft.favoriteSongs.filter(
+                            (favorite) => favorite.id !== song.id
+                        );
+                    }
+                }
+            })
         );
-        set({ playlist: updatedPlaylist });
-    },
+    },    
     setCurrentSong: (song) => {
-        set({ currentSong: song });
+        set({ currentSong: song ,isPlaying: true });
     },
-}));
+});
+
+const useMusicStore = create<MusicState>()(
+    persist(
+        createMusicStore,
+        {
+            name: 'music-store',
+            partialize: (state) => ({
+                favoriteSongs: state.favoriteSongs,
+            }),
+        }
+    )
+);
 
 const initializeMusicStore = async () => {
     const songs = await loadSongs();
-    useMusicStore.setState({ playlist: songs });
+    const favoriteSongs = useMusicStore.getState().favoriteSongs;
+    const updatedSongs = songs.map((song) => {
+        const isFavorite = favoriteSongs.some(favorite => favorite.id === song.id);
+        return { ...song, isFavorite };
+    });
+    useMusicStore.setState({ playlist: updatedSongs });
 };
 
 initializeMusicStore();

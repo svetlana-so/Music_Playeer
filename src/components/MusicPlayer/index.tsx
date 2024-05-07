@@ -1,9 +1,10 @@
 import React from 'react';
 import { useRef, useEffect } from 'react';
 import SongList from './Songlist';
-import Controls from './Controls';
+import Controls from './songControls/index';
 import VolumeControl from './VolumeControl';
 import useMusicStore from '../../state/musicStore';
+import { NavBar } from './navBar/index';
 
 const MusicPlayer: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -58,6 +59,7 @@ const MusicPlayer: React.FC = () => {
             <Controls />
             <VolumeControl audioRef={audioRef} />
             <SongList />
+            <NavBar/>
         </div>
     );
 };
