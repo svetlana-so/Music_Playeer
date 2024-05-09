@@ -5,6 +5,7 @@ import { getIconStyle } from "../../../utils/iconStyles";
 export const Favorites = () => {
   const { isHovered, handleMouseEnter, handleMouseLeave } = useHoverEffect();
   const iconStyle = getIconStyle(isHovered);
+  
 
   return (
     <div className='flex flex-col justify-center items-center'>

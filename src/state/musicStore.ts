@@ -1,122 +1,95 @@
-import { create, SetState, GetState } from 'zustand';
-import {produce} from 'immer'
-import { persist } from 'zustand/middleware';
-import { loadSongs } from '../utils/loadSongs';
+import { create, SetState, GetState } from "zustand";
+import { produce } from "immer";
+import { persist } from "zustand/middleware";
+import { loadSongs } from "../utils/loadSongs";
 
 export interface Song {
-    id: string;
-    title: string;
-    artist: string;
-    artCover: string;
-    duration: number;
-    src: string;
-    isFavorite: boolean;
+  id: string;
+  title: string;
+  artist: string;
+  artCover: string;
+  duration: number;
+  src: string;
+  isFavorite: boolean;
 }
 
 interface MusicState {
-    currentSong: Song | null;
-    playlist: Song[];
-    volume: number;
-    playPause: () => void;
-    skipTrack: (direction: 'next' | 'previous') => void;
-    adjustVolume: (level: number) => void;
-    toggleFavorite: (songId: string) => void;
-    setCurrentSong: (song: Song) => void;
-    isPlaying: boolean;
-    favoriteSongs: Song[];
+  currentSong: Song | null;
+  playlist: Song[];
+  volume: number;
+  playPause: () => void;
+  skipTrack: (direction: "next" | "previous") => void;
+  adjustVolume: (level: number) => void;
+  toggleFavorite: (songId: string) => void;
+  setCurrentSong: (song: Song) => void;
+  isPlaying: boolean;
+  favoriteSongs: Song[];
 }
 
-const createMusicStore = (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
-    currentSong: null,
-    playlist: [],
-    volume: 1,
-    isPlaying: false,
-    favoriteSongs: [],
-    playPause: () => {
+const useMusicStore = create<MusicState>()(
+  persist(
+    (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
+      currentSong: null,
+      playlist: [],
+      volume: 1,
+      isPlaying: false,
+      favoriteSongs: [],
+      playPause: () => {
         const { isPlaying, currentSong } = get();
         if (currentSong) {
-            set({ isPlaying: !isPlaying });
+          set({ isPlaying: !isPlaying });
         }
-    },
-    skipTrack: (direction) => {
+      },
+      skipTrack: (direction) => {
         const { playlist, currentSong } = get();
-        const currentIndex = playlist.findIndex(song => song.id === currentSong?.id);
+        const currentIndex = playlist.findIndex(
+          (song) => song.id === currentSong?.id
+        );
         let newIndex = currentIndex;
 
-        if (direction === 'next') {
-            newIndex = (currentIndex + 1) % playlist.length;
-        } else if (direction === 'previous') {
-            newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        if (direction === "next") {
+          newIndex = (currentIndex + 1) % playlist.length;
+        } else if (direction === "previous") {
+          newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
         }
 
         const newSong = playlist[newIndex];
         set({ currentSong: newSong, isPlaying: true });
-    },
-    adjustVolume: (level) => {
+      },
+      adjustVolume: (level) => {
         set({ volume: level });
-    },
-    toggleFavorite: (songId: string) => {
+      },
+      toggleFavorite: (songId: string) => {
         set(
-            produce((draft: MusicState) => {
-                const song = draft.playlist.find((song) => song.id === songId);
-                if (song) {
-                    song.isFavorite = !song.isFavorite;
-                    if (!Array.isArray(draft.favoriteSongs)) {
-                        draft.favoriteSongs = [];
-                    }
-                    if (song.isFavorite) {
-                        if (!draft.favoriteSongs.some((favorite) => favorite.id === song.id)) {
-                            draft.favoriteSongs.push(song);
-                        }
-                    } else {
-                        draft.favoriteSongs = draft.favoriteSongs.filter(
-                            (favorite) => favorite.id !== song.id
-                        );
-                    }
-                }
-            })
+          produce((draft: MusicState) => {
+            const song = draft.playlist.find((song) => song.id === songId);
+            if (song) {
+              song.isFavorite = !song.isFavorite;
+            }
+          })
         );
-    },    
-    setCurrentSong: (song) => {
-        set({ currentSong: song ,isPlaying: true });
-    },
-});
-
-const useMusicStore = create<MusicState>()(
-    persist(
-        createMusicStore,
-        {
-            name: 'music-store',
-            partialize: (state) => ({
-                favoriteSongs: state.favoriteSongs,
-                currentSong: state.currentSong,
-            }),
-        }
-    )
+      },
+      setCurrentSong: (song) => {
+        set({ currentSong: song, isPlaying: true });
+      },
+    }),
+    {
+      name: "music-store",
+    }
+  )
 );
 
-const initializeMusicStore = async () => {
-    const songs = await loadSongs();
-    const favoriteSongs = useMusicStore.getState().favoriteSongs;
-    const updatedSongs = songs.map((song) => {
-        const isFavorite = favoriteSongs.some(favorite => favorite.id === song.id);
-        return { ...song, isFavorite };
-    });
-    useMusicStore.setState({ playlist: updatedSongs });
+const setPlaylist = async () => {
+    const { playlist } = useMusicStore.getState();
 
-    const persistedCurrentSong = useMusicStore.getState().currentSong;
-    if (persistedCurrentSong) {
-        const currentSongInPlaylist = updatedSongs.find(
-            (song) => song.id === persistedCurrentSong.id
-        );
-        if (currentSongInPlaylist) {
-            useMusicStore.setState({ currentSong: currentSongInPlaylist });
-        }
+    // Only set the playlist if it is empty (prevents overwriting persisted state)
+    // I dont know if its the right way to fix the bug 
+    if (!playlist || playlist.length === 0) {
+      const songs = await loadSongs();
+      useMusicStore.setState({ playlist: songs });
     }
-
-    useMusicStore.setState({ playlist: updatedSongs });
 };
 
-initializeMusicStore();
+setPlaylist();
 
 export default useMusicStore;
