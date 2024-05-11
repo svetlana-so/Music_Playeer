@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react'
+import { formatTime } from '../../utils/timeFormat';
 
 interface ProgressBarTimeProps {
     currentSong: {
@@ -18,7 +19,7 @@ export const ProgressBarTime: React.FC<ProgressBarTimeProps>  = ({currentSong, a
     const [currentTime, setCurrentTime] = useState(0);
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        
+
         const newTime = parseFloat(e.target.value);
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
@@ -26,11 +27,6 @@ export const ProgressBarTime: React.FC<ProgressBarTimeProps>  = ({currentSong, a
         }
     };
 
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${minutes}:${secs.toString().padStart(2, "0")}`;
-    };
     
     useEffect(() => {
         const updateCurrentTime = () => {

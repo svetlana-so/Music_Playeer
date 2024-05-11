@@ -1,6 +1,6 @@
 import { create, SetState, GetState } from "zustand";
 import { produce } from "immer";
-import { persist } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
 import { loadSongs } from "../utils/loadSongs";
 
 export interface Song {
@@ -27,67 +27,69 @@ interface MusicState {
 }
 
 const useMusicStore = create<MusicState>()(
-  persist(
-    (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
-      currentSong: null,
-      playlist: [],
-      volume: 1,
-      isPlaying: false,
-      favoriteSongs: [],
-      playPause: () => {
-        const { isPlaying, currentSong } = get();
-        if (currentSong) {
-          set({ isPlaying: !isPlaying });
-        }
-      },
-      skipTrack: (direction) => {
-        const { playlist, currentSong } = get();
-        const currentIndex = playlist.findIndex(
-          (song) => song.id === currentSong?.id
-        );
-        let newIndex = currentIndex;
+  devtools(
+    persist(
+      (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
+        currentSong: null,
+        playlist: [],
+        volume: 1,
+        isPlaying: false,
+        favoriteSongs: [],
+        playPause: () => {
+          const { isPlaying, currentSong } = get();
+          if (currentSong) {
+            set({ isPlaying: !isPlaying });
+          }
+        },
+        skipTrack: (direction) => {
+          const { playlist, currentSong } = get();
+          const currentIndex = playlist.findIndex(
+            (song) => song.id === currentSong?.id
+          );
+          let newIndex = currentIndex;
 
-        if (direction === "next") {
-          newIndex = (currentIndex + 1) % playlist.length;
-        } else if (direction === "previous") {
-          newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-        }
+          if (direction === "next") {
+            newIndex = (currentIndex + 1) % playlist.length;
+          } else if (direction === "previous") {
+            newIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+          }
 
-        const newSong = playlist[newIndex];
-        set({ currentSong: newSong, isPlaying: true });
-      },
-      adjustVolume: (level) => {
-        set({ volume: level });
-      },
-      toggleFavorite: (songId: string) => {
-        set(
-          produce((draft: MusicState) => {
-            const song = draft.playlist.find((song) => song.id === songId);
-            if (song) {
-              song.isFavorite = !song.isFavorite;
-            }
-          })
-        );
-      },
-      setCurrentSong: (song) => {
-        set({ currentSong: song, isPlaying: true });
-      },
-    }),
-    {
-      name: "music-store",
-    }
+          const newSong = playlist[newIndex];
+          set({ currentSong: newSong, isPlaying: true });
+        },
+        adjustVolume: (level) => {
+          set({ volume: level });
+        },
+        toggleFavorite: (songId: string) => {
+          set(
+            produce((draft: MusicState) => {
+              const song = draft.playlist.find((song) => song.id === songId);
+              if (song) {
+                song.isFavorite = !song.isFavorite;
+              }
+            })
+          );
+        },
+        setCurrentSong: (song) => {
+          set({ currentSong: song, isPlaying: true });
+        },
+      }),
+      {
+        name: "music-store",
+      }
+    )
   )
 );
 
 const setPlaylist = async () => {
-    const { playlist } = useMusicStore.getState();
+  const { playlist } = useMusicStore.getState();
 
-    // Only set the playlist if it is empty (prevents overwriting persisted state)
-    // I dont know if its the right way to fix the bug 
-    if (!playlist || playlist.length === 0) {
-      const songs = await loadSongs();
-      useMusicStore.setState({ playlist: songs });
-    }
+  // Only set the playlist if it is empty (prevents overwriting persisted state)
+  // I dont know if its the right way to fix the bug
+  if (!playlist || playlist.length === 0) {
+    const songs = await loadSongs();
+    useMusicStore.setState({ playlist: songs });
+  }
 };
 
 setPlaylist();

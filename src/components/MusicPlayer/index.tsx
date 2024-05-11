@@ -12,6 +12,7 @@ import { DefaultCover } from './DefaultCover';
 const MusicPlayer: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const { currentSong, isPlaying, volume } = useMusicStore();
+    
 
     useEffect(() => {
         if (currentSong && audioRef.current) {
