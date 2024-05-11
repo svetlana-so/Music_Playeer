@@ -2,9 +2,11 @@ import { GoHeart } from "react-icons/go";
 import { useHoverEffect } from '../../../customHooks/useHoverEffect';
 import { getIconStyle } from "../../../utils/iconStyles";
 
-export const Favorites = () => {
+
+export const Favorites: React.FC = () => {
   const { isHovered, handleMouseEnter, handleMouseLeave } = useHoverEffect();
   const iconStyle = getIconStyle(isHovered);
+  
   
 
   return (

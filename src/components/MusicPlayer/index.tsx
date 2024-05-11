@@ -6,6 +6,8 @@ import VolumeControl from './VolumeControl';
 import useMusicStore from '../../state/musicStore';
 import { NavBar } from './navBar/index';
 import { ProgressBarTime } from './ProgressBarTime';
+import { DefaultCover } from './DefaultCover';
+
 
 const MusicPlayer: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -39,7 +41,7 @@ const MusicPlayer: React.FC = () => {
     return (
         <div className="music-player flex flex-col gap-8 w-full justify-center items-center">
             <h1 className='text-center text-xl text-gray-500 mt-4'>My Music Player</h1>
-            
+            {!currentSong && <DefaultCover/>}
             {currentSong && (
                 <>
                     <div className="flex justify-center items-center">
@@ -53,15 +55,16 @@ const MusicPlayer: React.FC = () => {
                         <h2 className="text-2xl font-semibold text-gray-400">{currentSong.title}</h2>
                         <p className="text-gray-600">{currentSong.artist}</p>
                     </div>
+                    <ProgressBarTime currentSong = {currentSong} audioRef = {audioRef}/>
 
-                   <ProgressBarTime currentSong = {currentSong} audioRef = {audioRef}/>
                 </>
             )}
             <audio ref={audioRef} />
             <Controls />
             <VolumeControl audioRef={audioRef} />
             <SongList />
-            <NavBar />
+            <NavBar/>
+            
         </div>
     );
 };

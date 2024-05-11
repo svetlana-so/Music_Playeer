@@ -18,6 +18,7 @@ export const ProgressBarTime: React.FC<ProgressBarTimeProps>  = ({currentSong, a
     const [currentTime, setCurrentTime] = useState(0);
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        
         const newTime = parseFloat(e.target.value);
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
@@ -32,13 +33,23 @@ export const ProgressBarTime: React.FC<ProgressBarTimeProps>  = ({currentSong, a
     };
     
     useEffect(() => {
-        if (audioRef.current) {
-            const updateCurrentTime = () => {
-                setCurrentTime(audioRef.current!.currentTime);
-            };
-            audioRef.current.addEventListener("timeupdate", updateCurrentTime);
+        const updateCurrentTime = () => {
+            if (audioRef.current && !audioRef.current.paused) {
+                setCurrentTime(audioRef.current.currentTime)
+            }
         }
+        if (audioRef.current) {
+            audioRef.current.addEventListener('timeupdate', updateCurrentTime)
+        }
+        return () => {
+            if (audioRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                audioRef.current.removeEventListener('timeupdate', updateCurrentTime);
+            }
+        };
     }, [audioRef]);
+
+    
 
   return (
     <div className="flex flex-row justify-center gap-2 items-center mt-2">
