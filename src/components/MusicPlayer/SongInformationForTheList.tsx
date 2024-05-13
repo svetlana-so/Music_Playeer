@@ -1,6 +1,6 @@
 import React from 'react';
 import { Song } from '../../state/musicStore';
-import { FavoriteButton } from './FavoriteButton';
+import { FavoriteButton } from './buttons/FavoriteButton';
 
 interface SongInformationForTheListProps {
     song: Song;

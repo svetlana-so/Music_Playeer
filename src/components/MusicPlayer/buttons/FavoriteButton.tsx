@@ -1,5 +1,5 @@
 import React from 'react'
-import { Song } from '../../state/musicStore';
+import { Song } from '../../../state/musicStore';
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 
 interface FavoriteButtonProps {
