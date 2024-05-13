@@ -4,8 +4,12 @@ import { Home } from './Home'
 import { Library } from './Library'
 import { Search } from './Search'
 
+interface NavBarProps {
+  setShowFavorites: (showFavorites: boolean) => void;
+  showFavorites: boolean
+}
 
-export const NavBar:React.FC = () => {
+export const NavBar:React.FC<NavBarProps> = ({ setShowFavorites, showFavorites }) => {
 
   
 
@@ -14,7 +18,7 @@ export const NavBar:React.FC = () => {
     <Home/>
     <Search/>
     <Library/>
-    <Favorites />
+    <Favorites setShowFavorites={setShowFavorites} showFavorites={showFavorites}/>
     </div>
   )
 }

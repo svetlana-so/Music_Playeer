@@ -8,6 +8,7 @@ The Music Player App is a simple web application that allows users to play their
 * Adjust volume
 * Display current song information (title, artist, album cover)
 * Show progress bar with current playback time
+* Responsive design 
 
 # 📦 Technologies Used:
 

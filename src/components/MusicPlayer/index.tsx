@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import SongList from './Songlist';
 import Controls from './songControls/index';
 import VolumeControl from './VolumeControl';
@@ -7,11 +7,13 @@ import useMusicStore from '../../state/musicStore';
 import { NavBar } from './navBar/index';
 import { ProgressBarTime } from './ProgressBarTime';
 import { DefaultCover } from './DefaultCover';
+import FavoriteSongs from './FavoriteSongs';
 
 
 const MusicPlayer: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const { currentSong, isPlaying, volume } = useMusicStore();
+    const [showFavorites, setShowFavorites] = useState(false);
     
 
     useEffect(() => {
@@ -47,7 +49,7 @@ const MusicPlayer: React.FC = () => {
                 <>
                     <div className="flex justify-center items-center">
                         <img
-                            className="w-40 h-40 rounded-full white-glow"
+                            className="w-40 h-40 rounded-lg white-glow"
                             src={currentSong.artCover}
                             alt={currentSong.title}
                         />
@@ -63,8 +65,8 @@ const MusicPlayer: React.FC = () => {
             <audio ref={audioRef} />
             <Controls />
             <VolumeControl audioRef={audioRef} />
-            <SongList />
-            <NavBar/>
+            {showFavorites ? <FavoriteSongs /> : <SongList />}
+            <NavBar setShowFavorites={setShowFavorites} showFavorites={showFavorites}/>
             
         </div>
     );

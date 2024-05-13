@@ -66,6 +66,18 @@ const useMusicStore = create<MusicState>()(
               const song = draft.playlist.find((song) => song.id === songId);
               if (song) {
                 song.isFavorite = !song.isFavorite;
+                // Check if the song is in the favorite songs list
+                const favoriteIndex = draft.favoriteSongs.findIndex((favSong) => favSong.id === songId);
+
+                // If the song is not in favoriteSongs and is now marked as favorite, add it
+                if (song.isFavorite && favoriteIndex === -1) {
+                    draft.favoriteSongs.push(song);
+                }
+
+                // If the song is in favoriteSongs and is no longer marked as favorite, remove it
+                if (!song.isFavorite && favoriteIndex !== -1) {
+                    draft.favoriteSongs.splice(favoriteIndex, 1);
+                }
               }
             })
           );
