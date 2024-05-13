@@ -17,8 +17,8 @@ export const NavBar:React.FC<NavBarProps> = ({ setShowFavorites, showFavorites }
     <div className='w-full flex flex-row justify-center gap-10 mb-4'>
     <Home/>
     <Search/>
-    <Library/>
-    <Favorites setShowFavorites={setShowFavorites} showFavorites={showFavorites}/>
+    <Library setShowFavorites={setShowFavorites} showFavorites= {showFavorites}/>
+    <Favorites setShowFavorites={setShowFavorites} showFavorites= {showFavorites}/>
     </div>
   )
 }
