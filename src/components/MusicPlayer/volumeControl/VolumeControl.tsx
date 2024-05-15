@@ -1,5 +1,5 @@
 import React from 'react'
-import useMusicStore from '../../state/musicStore'
+import useMusicStore from '../../../state/musicStore'
 import { LiaVolumeUpSolid } from 'react-icons/lia'
 
 interface VolumeControlProps {

@@ -2,7 +2,7 @@ import React from 'react'
 import { useRef, useEffect, useState } from 'react'
 import SongList from './Songlist'
 import Controls from './songControls/index'
-import VolumeControl from './VolumeControl'
+import VolumeControl from './volumeControl/VolumeControl'
 import useMusicStore from '../../state/musicStore'
 import { NavBar } from './navBar/index'
 import { ProgressBarTime } from './ProgressBarTime'
@@ -13,6 +13,7 @@ const MusicPlayer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null)
   const { currentSong, isPlaying, volume } = useMusicStore()
   const [showFavorites, setShowFavorites] = useState(false)
+  
 
   useEffect(() => {
     if (currentSong && audioRef.current) {
@@ -35,7 +36,7 @@ const MusicPlayer: React.FC = () => {
   }, [volume])
 
   return (
-    <div className="music-player flex flex-col gap-8 w-full justify-center items-center">
+    <div className="music-player flex flex-col gap-8 w-full justify-center items-center max-h-full">
       <h1 className="text-center text-xl text-gray-500 mt-4">My Music Player</h1>
       {!currentSong && <DefaultCover />}
       {currentSong && (
@@ -58,7 +59,7 @@ const MusicPlayer: React.FC = () => {
       <Controls />
       <VolumeControl audioRef={audioRef} />
       {showFavorites ? <FavoriteSongs /> : <SongList />}
-      <NavBar setShowFavorites={setShowFavorites} showFavorites={showFavorites} />
+      <NavBar  setShowFavorites={setShowFavorites} showFavorites={showFavorites} />
     </div>
   )
 }

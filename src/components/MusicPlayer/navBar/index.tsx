@@ -10,7 +10,7 @@ interface NavBarProps {
 
 export const NavBar: React.FC<NavBarProps> = ({ setShowFavorites, showFavorites }) => {
   return (
-    <div className="w-full flex flex-row justify-center gap-10 mb-4">
+    <div className="w-full flex flex-row justify-center gap-10 mb-4 ">
       <Home />
       <Search />
       <Library setShowFavorites={setShowFavorites} showFavorites={showFavorites} />

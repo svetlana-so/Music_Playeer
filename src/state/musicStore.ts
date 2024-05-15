@@ -1,4 +1,4 @@
-import { create, SetState, GetState } from 'zustand'
+import { create } from 'zustand'
 import { produce } from 'immer'
 import { persist, devtools } from 'zustand/middleware'
 import { loadSongs } from '../utils/loadSongs'
@@ -29,7 +29,7 @@ interface MusicState {
 const useMusicStore = create<MusicState>()(
   devtools(
     persist(
-      (set: SetState<MusicState>, get: GetState<MusicState>): MusicState => ({
+      (set, get) => ({
         currentSong: null,
         playlist: [],
         volume: 1,
@@ -41,19 +41,12 @@ const useMusicStore = create<MusicState>()(
             set({ isPlaying: !isPlaying })
           }
         },
-        skipTrack: direction => {
-          const { playlist, currentSong } = get()
-          const currentIndex = playlist.findIndex(song => song.id === currentSong?.id)
-          let newIndex = currentIndex
-
-          if (direction === 'next') {
-            newIndex = (currentIndex + 1) % playlist.length
-          } else if (direction === 'previous') {
-            newIndex = (currentIndex - 1 + playlist.length) % playlist.length
-          }
-
-          const newSong = playlist[newIndex]
-          set({ currentSong: newSong, isPlaying: true })
+        skipTrack: (direction: string) => {
+          const { playlist, currentSong } = get();
+          const currentIndex = playlist.findIndex(song => song.id === currentSong?.id);
+          const newIndex = (currentIndex + (direction === 'next' ? 1 : -1) + playlist.length) % playlist.length;
+          const newSong = playlist[newIndex];
+          set({ currentSong: newSong, isPlaying: true });
         },
         adjustVolume: level => {
           set({ volume: level })
